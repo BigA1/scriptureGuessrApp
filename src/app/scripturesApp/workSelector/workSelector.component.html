@@ -1,0 +1,17 @@
+<mat-card>
+    <mat-card-content>
+        <mat-card-header>
+            <mat-card-title>{{ 'Select Book of Scripture' }}</mat-card-title>
+        </mat-card-header>
+
+        <mat-grid-list cols="2" rowHeight="200px">
+            <mat-grid-tile 
+            *ngFor="let work of works"
+            (click)="onWorkSelected(work)"
+            routerLink="/scripture"
+            >
+            {{work.title}}
+            </mat-grid-tile>
+        </mat-grid-list>
+    </mat-card-content>
+</mat-card>

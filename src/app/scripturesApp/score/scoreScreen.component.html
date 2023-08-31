@@ -1,0 +1,18 @@
+<mat-card>
+    <mat-card-content>
+      <div  class="whiteText">
+        <h1> {{ currentWork.title }} </h1>
+        <h1> Daily Challenge {{dailyChallengeNumber}}</h1>
+        <table>
+          <tr *ngFor="let score of score$ | async">
+            <td>Round {{score.round}}: {{ score.score }} <span *ngIf="score.isNerd">🤓</span></td>
+          </tr>
+        </table>
+      </div>
+      <span class="whiteText">Total Score: {{ totalScore$ | async }}</span>
+      <div>
+        <button  mat-raised-button color="accent" (click)="onHome()">Home</button>
+        <button  mat-raised-button color="accent" (click)="onShare()">Share</button>
+      </div>
+    </mat-card-content>
+  </mat-card>

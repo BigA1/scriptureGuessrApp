@@ -1,0 +1,14 @@
+mat-grid-tile {
+    background: #607D8B;
+    cursor: pointer;
+    color: white;
+}
+
+.currentSelection {
+    margin-left: 10px;
+    color: white;
+}
+
+.cardTitle {
+    color: white;
+}

@@ -1,0 +1,25 @@
+<h1>{{ (work$ | async)?.title }}</h1>
+<mat-card>
+  <mat-card-content>
+    <p class="whiteText">
+      {{ randomVerse?.text }}
+    </p>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-content>
+    <div class="whiteText">
+      <button mat-raised-button color="accent" (click)="showChapterClicked()" *ngIf="!showChapter">Show Chapter</button>
+      <button mat-raised-button color="accent" (click)="showChapterClicked()" *ngIf="showChapter">Hide Chapter</button>
+      <span *ngIf="isNerd$ | async" class="nerd">🤓</span>
+    </div>
+    <div *ngIf="showChapter" class="whiteText">
+      <table>
+        <tr *ngFor="let verse of randomVerseChapter$ | async; let i = index">
+          <td [ngClass]="{'highlight': i + 1 === randomVerseNumber}">{{ verse }}</td>
+        </tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

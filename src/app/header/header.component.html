@@ -1,0 +1,21 @@
+<mat-toolbar>
+    <span>
+      <a routerLink="/">Scripture Guesser Daily Challenge</a>
+    </span>
+    <button mat-icon-button (click)="help()">
+      <mat-icon>help</mat-icon>
+    </button>
+    <span class="spacer"></span>
+    <ul>
+      <li *ngIf="!userIsAuthenticated && false">
+        <a mat-button routerLink="/auth/login" routerLinkActive="mat-accent">Login</a>
+      </li >
+      <li *ngIf="!userIsAuthenticated && false">
+        <a mat-button routerLink="/auth/signup" routerLinkActive="mat-accent">Signup</a>
+      </li >
+      <li *ngIf="userIsAuthenticated && false">
+        <button mat-button (click)="onLogout()">Logout</button>
+      </li>
+    </ul>
+  </mat-toolbar>
+  

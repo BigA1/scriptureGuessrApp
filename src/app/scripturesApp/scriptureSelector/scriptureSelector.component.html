@@ -1,0 +1,36 @@
+
+
+<mat-card>
+    <mat-card-content>
+        <mat-card-header>
+            <mat-card-title class="cardTitle">{{ 'Guess Scripture' }}</mat-card-title>
+        </mat-card-header>
+        <button *ngIf="!showBookSelection" mat-raised-button color="accent" (click)="onBack()">Back</button>
+        <span class="currentSelection">{{currentBookSelection}}</span>
+        <span class="currentSelection">{{currentChapterSelection}}</span>
+        <mat-grid-list *ngIf="showBookSelection" cols="2" rowHeight="100px">
+            <mat-grid-tile 
+            *ngFor="let book of books"
+            (click)="onBookSelected(book)"
+            class="books">
+            {{book.book}}
+            </mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list *ngIf="showChapterSelection" cols="4" rowHeight="100px">
+            <mat-grid-tile 
+            *ngFor="let chapter of chapters"
+            (click)="onChapterSelected(chapter)"
+            class="chapters">
+            {{chapter.chapter}}
+            </mat-grid-tile>
+        </mat-grid-list>
+        <mat-grid-list *ngIf="showVerseSelection"cols="5" rowHeight="50px">
+            <mat-grid-tile 
+            *ngFor="let verse of verses"
+            (click)="onVerseSelected(verse)"
+            class="verses">
+            {{verse.verse}}
+            </mat-grid-tile>
+        </mat-grid-list>
+    </mat-card-content>
+</mat-card>

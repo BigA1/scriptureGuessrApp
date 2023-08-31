@@ -1,0 +1,6 @@
+{
+    "env": {
+        "MONGO_ATLAS_PW": "Fnhfa6AUWqIeacIT",
+        "JWT_KEY": "men_are_that_they_might_have_joy"
+    }
+}

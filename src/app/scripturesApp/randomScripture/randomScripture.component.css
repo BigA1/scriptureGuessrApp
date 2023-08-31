@@ -1,0 +1,19 @@
+.whiteText {
+    color: white;
+ }
+
+ h1 {
+    display: flex;
+    justify-content: center;
+    color: white;
+}
+
+.nerd {
+    margin-left: 20px;
+}
+
+.highlight {
+    font-size: 1.5em;
+    color: #039ba0;
+}
+

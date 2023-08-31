@@ -1,0 +1,12 @@
+mat-grid-tile {
+    background: #546E7A;
+    cursor: pointer;
+    color: white;
+}
+::ng-deep .mat-grid-tile-content {
+    margin: 10px !important;
+}
+
+mat-card-title {
+    color: white;
+}
