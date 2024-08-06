@@ -8,7 +8,6 @@ import * as oldTestament from '../scriptures/old-testament.json';
 import * as oldTestamentFlat from '../scriptures/old-testament-flat.json';
 import * as pearlOfGreatPrice from '../scriptures/pearl-of-great-price.json';
 import * as pearlOfGreatPriceFlat from '../scriptures/pearl-of-great-price-flat.json';
-import * as dailyChallenges from '../challenges/daily-challenges.json';
 
 import { Injectable, OnInit } from '@angular/core';
 import {
@@ -22,9 +21,14 @@ import {
   WorkFlat,
 } from './scripture.model';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { PrngService } from './prng.service';
 
 @Injectable({ providedIn: 'root' })
 export class ScripturesAppService {
+  constructor(private prngService: PrngService) {}
+
+  private dailyChallenge: Challenge5;
+
   public randomScripture: Verse;
   public workFlat: WorkFlat = bookOfMormonFlat;
   public work: Work = bookOfMormon;
@@ -41,7 +45,6 @@ export class ScripturesAppService {
     pearlOfGreatPrice,
   ];
   public score: Score[] = [];
-  public dailyChallenge: ChallengeSet = dailyChallenges;
   public isDailyChallenge: boolean = true;
   public dailyChallengeIndex: number = 0;
   public dailyChallengeOffset: number = 0;
@@ -66,24 +69,26 @@ export class ScripturesAppService {
 
   public nextRound() {
     let randomNumber = Math.random();
-    if(this.isDailyChallenge) {
-      let challenge: Challenge5 = this.getDailyChallenge();
-      switch (this.round) { 
+    if (this.isDailyChallenge) {
+      if (!this.dailyChallenge) {
+        this.dailyChallenge = this.getDailyChallenge();
+      }
+      switch (this.round) {
         case 1:
-            randomNumber  = challenge.randomNumber1;
-            break;
+          randomNumber = this.dailyChallenge.randomNumber1;
+          break;
         case 2:
-            randomNumber  = challenge.randomNumber2;
-            break;
+          randomNumber = this.dailyChallenge.randomNumber2;
+          break;
         case 3:
-            randomNumber  = challenge.randomNumber3;
-            break;
+          randomNumber = this.dailyChallenge.randomNumber3;
+          break;
         case 4:
-            randomNumber  = challenge.randomNumber4;
-            break;
+          randomNumber = this.dailyChallenge.randomNumber4;
+          break;
         case 5:
-            randomNumber  = challenge.randomNumber5;
-            break;
+          randomNumber = this.dailyChallenge.randomNumber5;
+          break;
       }
     }
     this.getRandomScripture(randomNumber);
@@ -197,15 +202,15 @@ export class ScripturesAppService {
 
   public calculateScore(distance: number): number {
     const sizeOfWork = this.workFlat.verses.length;
-    const scoringDistance = sizeOfWork/this.difficulty;
+    const scoringDistance = sizeOfWork / this.difficulty;
     const scorePercentage = (scoringDistance - distance) / scoringDistance;
     const scoreScalar = 100;
     let score = Math.ceil(scorePercentage * scoreScalar);
     if (score < 0) {
       return 0;
     }
-    if(this.isNerdSubject.value) {
-        score = score * 2;
+    if (this.isNerdSubject.value) {
+      score = score * 2;
     }
     return score;
   }
@@ -216,7 +221,11 @@ export class ScripturesAppService {
 
   public updateScore(score: number) {
     this.totalScore += score;
-    this.score.push({ round: this.round, score: score, isNerd: this.isNerdSubject.value });
+    this.score.push({
+      round: this.round,
+      score: score,
+      isNerd: this.isNerdSubject.value,
+    });
     this.round++;
     this.scoreSubject.next(this.score);
     this.totalScoreSubject.next(this.totalScore);
@@ -228,40 +237,33 @@ export class ScripturesAppService {
     this.score = [];
   }
 
-  public getDailyChallenge(): Challenge5 { 
-    let today = new Date();
-    let startDate = new Date(2023,6,8);
-    let diff = Math.abs(startDate.getTime() - today.getTime());
-    let diffDays = Math.floor(diff / (1000 * 3600 * 24));
-    this.dailyChallengeIndex = diffDays + this.dailyChallengeOffset;
-    return this.dailyChallenge.challenges[this.dailyChallengeIndex]; 
+  public getDailyChallenge(): Challenge5 {
+    const challenge = this.generateDailyChallenge();
+    return challenge;
   }
 
-  public generateDailyChallenge(): Challenge5[] {
-    let dailyChallenges: Challenge5[] = [];
-    for (let i = 0; i < 365; i++) {
-      let randomNumber1 = Math.random();
-      let randomNumber2 = Math.random();
-      let randomNumber3 = Math.random();
-      let randomNumber4 = Math.random();
-      let randomNumber5 = Math.random();
+  public generateDailyChallenge(): Challenge5 {
+    const randomNumber1 = this.prngService.random();
+    const randomNumber2 = this.prngService.random();
+    const randomNumber3 = this.prngService.random();
+    const randomNumber4 = this.prngService.random();
+    const randomNumber5 = this.prngService.random();
 
-      let dailyChallenge: Challenge5 =
-        {
-          round1: 1,
-          randomNumber1: randomNumber1,
-          round2: 2,
-          randomNumber2: randomNumber2,
-          round3: 3,
-          randomNumber3: randomNumber3,
-          round4: 4,
-          randomNumber4: randomNumber4,
-          round5: 5,
-          randomNumber5: randomNumber5,
-        }
-        dailyChallenges.push(dailyChallenge);
-    }
-    return dailyChallenges;
+    this.prngService.reset();
+
+    let dailyChallenge: Challenge5 = {
+      round1: 1,
+      randomNumber1: randomNumber1,
+      round2: 2,
+      randomNumber2: randomNumber2,
+      round3: 3,
+      randomNumber3: randomNumber3,
+      round4: 4,
+      randomNumber4: randomNumber4,
+      round5: 5,
+      randomNumber5: randomNumber5,
+    };
+    return dailyChallenge;
   }
 
   public hasLookedAtChapter() {
