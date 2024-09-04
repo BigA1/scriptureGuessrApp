@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class PrngService {
   constructor() {
-    const seed = this.getDailySeed();
-    this.random = this.sfc32(seed[0], seed[1], seed[2], seed[3]);
+    this.setSeed();
   }
 
   //This the SFC32 PRNG algorithm use the cyrb128 hash function to seed this.
@@ -43,10 +42,11 @@ export class PrngService {
     (h1 ^= h2 ^ h3 ^ h4), (h2 ^= h1), (h3 ^= h1), (h4 ^= h1);
     return [h1 >>> 0, h2 >>> 0, h3 >>> 0, h4 >>> 0];
   }
-  private getDailySeed() {
+  public setSeed(seedString?: string) {
     const date = new Date();
     date.setHours(0, 0, 0, 0);
-    let seed = this.cyrb128(date.toDateString());
+    const seed = this.cyrb128(date.toDateString() + seedString);
+    this.random = this.sfc32(seed[0], seed[1], seed[2], seed[3]);
     return seed;
   }
   //This is set in the constructor and is the PRNG function
@@ -55,7 +55,6 @@ export class PrngService {
   }
 
   public reset() {
-    const seed = this.getDailySeed();
-    this.random = this.sfc32(seed[0], seed[1], seed[2], seed[3]);
+    this.setSeed();
   }
 }

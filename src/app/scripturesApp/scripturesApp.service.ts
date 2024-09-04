@@ -46,8 +46,6 @@ export class ScripturesAppService {
   ];
   public score: Score[] = [];
   public isDailyChallenge: boolean = true;
-  public dailyChallengeIndex: number = 0;
-  public dailyChallengeOffset: number = 0;
   public difficulty: number = 10;
 
   private randomScriptureSubject = new BehaviorSubject<Verse>(
@@ -68,9 +66,11 @@ export class ScripturesAppService {
   public isNerd$ = this.isNerdSubject.asObservable();
 
   public nextRound() {
-    let randomNumber = Math.random();
+    let randomNumber = 0;
     if (this.isDailyChallenge) {
-      if (!this.dailyChallenge) {
+      if (this.round == 1) {
+        this.dailyChallenge = this.getDailyChallenge();
+      } else if (!this.dailyChallenge) {
         this.dailyChallenge = this.getDailyChallenge();
       }
       switch (this.round) {
@@ -93,16 +93,13 @@ export class ScripturesAppService {
     }
     this.getRandomScripture(randomNumber);
   }
-  public getRandomScripture(randomNumber?: number) {
+  public getRandomScripture(randomNumber: number) {
     this.max = this.workFlat.verses.length;
-    if (!randomNumber) {
-      randomNumber = Math.random();
-    }
-    let scritpureIndex =
+    const scritpureIndex =
       Math.floor(randomNumber * (this.max - this.min + 1)) + this.min;
     this.randomScripture = this.workFlat.verses[scritpureIndex];
     this.randomScriptureSubject.next(this.randomScripture);
-    let verseArray = this.getRandomVerseChapterText();
+    const verseArray = this.getRandomVerseChapterText();
     this.randomChapterSubject.next(verseArray);
     this.isNerdSubject.next(true);
   }
@@ -119,16 +116,12 @@ export class ScripturesAppService {
       case bookOfMormon:
         return bookOfMormonFlat;
       case doctrineAndCovenants:
-        this.dailyChallengeOffset = 1;
         return doctrineAndCovenantsFLat;
       case newTestament:
-        this.dailyChallengeOffset = 2;
         return newTestamentFlat;
       case oldTestament:
-        this.dailyChallengeOffset = 3;
         return oldTestamentFlat;
       case pearlOfGreatPrice:
-        this.dailyChallengeOffset = 4;
         return pearlOfGreatPriceFlat;
       default:
         return bookOfMormonFlat;
@@ -243,6 +236,7 @@ export class ScripturesAppService {
   }
 
   public generateDailyChallenge(): Challenge5 {
+    this.prngService.setSeed(this.work.title);
     const randomNumber1 = this.prngService.random();
     const randomNumber2 = this.prngService.random();
     const randomNumber3 = this.prngService.random();
